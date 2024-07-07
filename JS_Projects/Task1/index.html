@@ -1,3 +1,8 @@
+<!-- What's the Difference between adding the script attribute in head section and in body section -->
+<!-- The difference is that when the script is added in the head section, the script is executed before the body is loaded. -->
+<!-- When the script is added in the body section, the script is executed after the body is loaded. -->
+<!-- So in somecases we can't executed the docutment object before loading the body incase of putting the script in the head. -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +11,10 @@
     </script> -->
 </head>
 <body>
+    <!-- <h1 id="demo"></h1> -->
+    <button onclick="changeContent()">
+        <div id="demo"> Click me</div>
+    </button>
     <script src="script.js"></script>
-    <button onclick="showAlert('som3a')"> Click me</button>
 </body>
 </html>
