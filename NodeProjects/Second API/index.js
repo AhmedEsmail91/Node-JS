@@ -95,15 +95,17 @@ const FakeData=
   }
 ]
 //Question:
-//How to Create a server that listens on port 3000?
-//How to handle routes?
-//How to handle different HTTP methods? just [GET] for this example.
-//How to pass file using FileSystem Module to the server?
-//What's the difference betweeen fs.readFileSync [Blocking] and fs.readFile(Async)[return Pormise and must be !!awaited!! and needs callback function]?
+// res.end() vs res.write()[chuncking the data]
 const Server=http.createServer((req,res)=>{
     if(req.url==='/'){
-        res.setHeader('Content-type','text/html')
-        res.end('<h1>Home Page</h1>')
+        // res.setHeader('Content-type','text/html')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')// write is used to send data in chunks and makes the server keep loading cause it doesn't know when the data is finished
+        res.end('<h1>Home Page</h1>') // end is used to send the data in one go and tells the server that the data is finished
     }
     else if(req.url==='/about' && req.method==='GET'){
         res.end(aboutPage)
@@ -119,12 +121,11 @@ const Server=http.createServer((req,res)=>{
         res.end('User Added')
     }
     else{
-      // !! ONE RESPONSE PER REQUEST
         res.end('404 Page')
     }
     console.log(req)
 });
-Server.listen(3000,()=>{
+Server.listen(3000,'192.168.40.118',()=>{
     console.log('Server is Running')
 })
 //HTTP methods
