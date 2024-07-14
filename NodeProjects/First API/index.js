@@ -107,6 +107,12 @@ const Server=http.createServer((req,res)=>{
         
         res.end(JSON.stringify(FakeData))
     }
+    else if(req.url==='/adduser' && req.method==='POST'){
+        req.on('data',(chunk)=>{
+            console.log(JSON.parse(chunk))
+        })
+        res.end('User Added')
+    }
     else{
         res.end('404 Page')
     }
@@ -115,3 +121,10 @@ const Server=http.createServer((req,res)=>{
 Server.listen(3000,()=>{
     console.log('Server is Running')
 })
+//HTTP methods
+//GET->Browser is requesting data from the server
+//POST
+//PUT->Update the whole resource
+//PATCH->Update a part of the resource [Better Performance for large data]
+//DELETE
+ 
