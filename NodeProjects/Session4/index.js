@@ -1,64 +1,117 @@
-console.log('Hello NodeJs!!')
-/**
- * Note: window.alert('NOT Running')// we can't excute (DOM or BOM)[Any Document page code] codes in Node server.
-*/
-
-// Types of Node Modules (3 Types)
-/**
- * 1- Core Modules
- * 2- Local Modules (Created by urself)
- * 3- 3rd party Modules (installed using npm i Module_Name)
- */
-
-//HTTP module used to create the server
-const myHttp=require('http');
-// import HTTP form (es5), but for es6 use (import) statement [it's like import http as myHTTP in python]
-
-
-const users=[
-    {name:'Ahmed',age:25,email:'ahmed@gmail.com'},
-    {name:'Ahmed',age:25,email:'ahmed@gmail.com'},
-    {name:'Ahmed',age:25,email:'ahmed@gmail.com'},
-    {name:'Ahmed',age:25,email:'ahmed@gmail.com'},
-    {name:'Ahmed',age:25,email:'ahmed@gmail.com'}
+const http=require('http');
+const fs=require('fs'); //this makes the file system module available to us
+const aboutPage=fs.readFileSync('./about.html') // read the file synchronously
+const FakeData=
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "age": 28,
+    "email": "john.doe@example.com",
+    "phone": "+1234567890",
+    "address": "123 Maple Street, Springfield, IL",
+    "occupation": "Software Developer"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "age": 34,
+    "email": "jane.smith@example.com",
+    "phone": "+0987654321",
+    "address": "456 Oak Avenue, Metropolis, NY",
+    "occupation": "Graphic Designer"
+  },
+  {
+    "id": 3,
+    "name": "Alice Johnson",
+    "age": 25,
+    "email": "alice.johnson@example.com",
+    "phone": "+1122334455",
+    "address": "789 Pine Lane, Gotham, NJ",
+    "occupation": "Data Analyst"
+  },
+  {
+    "id": 4,
+    "name": "Bob Brown",
+    "age": 42,
+    "email": "bob.brown@example.com",
+    "phone": "+2233445566",
+    "address": "321 Cedar Court, Star City, CA",
+    "occupation": "Project Manager"
+  },
+  {
+    "id": 5,
+    "name": "Charlie Davis",
+    "age": 37,
+    "email": "charlie.davis@example.com",
+    "phone": "+3344556677",
+    "address": "654 Birch Boulevard, Central City, TX",
+    "occupation": "Marketing Specialist"
+  },
+  {
+    "id": 6,
+    "name": "Emily Evans",
+    "age": 29,
+    "email": "emily.evans@example.com",
+    "phone": "+4455667788",
+    "address": "987 Walnut Street, Coast City, FL",
+    "occupation": "Financial Analyst"
+  },
+  {
+    "id": 7,
+    "name": "Frank Green",
+    "age": 31,
+    "email": "frank.green@example.com",
+    "phone": "+5566778899",
+    "address": "159 Elm Drive, Keystone City, GA",
+    "occupation": "Accountant"
+  },
+  {
+    "id": 8,
+    "name": "Grace Harris",
+    "age": 26,
+    "email": "grace.harris@example.com",
+    "phone": "+6677889900",
+    "address": "753 Chestnut Avenue, Starling City, AZ",
+    "occupation": "Software Engineer"
+  },
+  {
+    "id": 9,
+    "name": "Henry White",
+    "age": 35,
+    "email": "henry.white@example.com",
+    "phone": "+7788990011",
+    "address": "852 Maple Boulevard, National City, CO",
+    "occupation": "HR Specialist"
+  },
+  {
+    "id": 10,
+    "name": "Ivy Black",
+    "age": 30,
+    "email": "ivy.black@example.com",
+    "phone": "+8899001122",
+    "address": "951 Cedar Lane, Bludhaven, NV",
+    "occupation": "Product Manager"
+  }
 ]
-//routing to html file content
-const fs=require('fs') // file system module
-const htmlContent =fs.readFileSync('./about.html') // read the file synchronously
 
-const Server=myHttp.createServer((req,res)=>{
-    //Defualt Route
-    if(req.url==='/'&&req.method==='GET'){
-        res.setHeader('Content-Type','text/html')//it makes the server to understand the type of the content.
-        // res.end('<img src="https://www.webopedia.com/wp-content/uploads/2021/12/Webo.Cisco_.C-Series-300x277.png" alt="Google Logo">')
-        /**Chanege Array of objects to string 
-         * JSON.stringify(users) => convert the array of objects to string
-         */
-        res.end(JSON.stringify(users));
-
+const Server=http.createServer((req,res)=>{
+    if(req.url==='/'){
+        res.setHeader('Content-type','text/html')
+        res.end('<h1>Home Page</h1>')
     }
-    //About Route
-    else if(req.url==='/about'&&req.method==='GET'){
-        // return the file content
-        res.end(htmlContent)
-
+    else if(req.url==='/about' && req.method==='GET'){
+        res.end(aboutPage)
     }
-    //API Route
-    else if(req.url==='/api'&&req.method==='GET'){
-        res.end('api page')
+    else if(req.url==='/api' && req.method==='GET'){
+        
+        res.end(JSON.stringify(FakeData))
     }
-    //NotFound Route
     else{
-        res.end('404 not found page')
+        res.end('404 Page')
     }
-
-    console.log(req) // display the request (url, method, etc...)
-    
-    // the messsage will be displayed
-}) // create the server which return listen() used to get the port for the server
-
+    console.log(req)
+});
 Server.listen(3000,()=>{
-    console.log('server is running')
-}) // this server 
-//Coding Endpoints (Routing)
-
+    console.log('Server is Running')
+})
