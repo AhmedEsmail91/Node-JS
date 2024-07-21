@@ -250,3 +250,104 @@ Route.get('/auth_test',
   app.all('/api/resource', (req, res) => {
   *Logic here will execute for any HTTP method (GET, POST, etc.)
 });*/
+
+//----------------------------MYSQL2----------------------------
+const mysql=require('mysql2');// calling the mysql2 module
+//DB Establishing connection
+const query=mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'session6_node'
+}); //query: the connection object to the database.
+/*
+query.execute("SELECT * FROM users",(err,rows,fields)=>{
+  if(err){
+    console.log(err);
+  }
+  else{ 
+    console.log(rows);
+    // console.log(fields);
+  }
+});// execute: a method to execute the query on the database like in Pure Java: Statamen instance stmt.executeQuery("SELECT * FROM users"); 
+*/
+
+// get all users middleware
+function allUsers(req,res,next){
+  query.execute('SELECT * FROM users',(err,rows,fields)=>{
+    if(err){
+      res.json({"message":err.sqlMessage});
+    }
+    else{
+      res.json(rows);
+      
+    }
+  });
+}
+// get all users route
+Route.get('/allUsers',allUsers);
+
+// Insert user Middleware
+function addUser(req,res,next){
+  const {name,email,password}=req.body;
+  query.execute('INSERT INTO users (name,email,password) VALUES (?,?,?)',[name,email,password],(err,rows,fields)=>{
+    if(err){
+      res.json({"message":err.sqlMessage});
+    }
+    else{
+      res.json({"message":"User added successfully to the Database"});
+    }
+  });
+}
+//Insertion Route
+Route.post('/addUserDB',addUser);
+
+
+// Update user Middleware
+function updateUser(req,res,next){
+  const id=req.params.id;
+  const {name,email,password}=req.body;
+  query.execute('UPDATE users SET name=?,password=? WHERE id=?',[name,password,id],(err,rows,fields)=>{
+    if(err){
+      res.json({"message":err.sqlMessage});
+    }
+    else{
+      res.json({"message":"User updated successfully to the Database",'rows':rows});
+    }
+  });
+}
+//Update Route
+Route.put('/updateUserDB/:id',updateUser);
+
+// Delete user Middleware
+function deleteUser(req,res,next){
+  const id=req.params.id;
+  query.execute('DELETE FROM users WHERE id=?',[id],(err,rows,fields)=>{
+    if(err){
+      res.json({"message":err.sqlMessage});
+
+    }
+    else{
+      if( rows.fieldCount<=0)res.json({"message":"User not found in the Database"});
+      else res.json({"message":"User deleted successfully from the Database",'rows':rows});
+    }
+  });
+}
+//Delete Route
+Route.delete('/deleteUserDB/:id',deleteUser);
+
+//Searching user Middleware
+const Search=(req,res,next)=>{
+  const id=req.params.id;
+  const {name}=req.body;
+  query.execute("Select * FROM users WHERE name LIKE '%"+name+"%'",(err,rows,fields)=>{
+    if(err){
+      res.json({"message":err.sqlMessage});
+    }
+    else{
+      res.json(rows);
+    }
+  });
+};
+//userSearching Route
+Route.get('/userSearch',Search);
