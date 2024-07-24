@@ -1,0 +1,35 @@
+http,fs(filesystem)
+like the Following
+
+const Server=http.createServer((req,res)=>{
+    if(req.url==='/'){
+        // res.setHeader('Content-type','text/html')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')
+        res.write('<h1>Home Page</h1>')// write is used to send data in chunks and makes the server keep loading cause it doesn't know when the data is finished
+        res.end('<h1>Home Page</h1>') // end is used to send the data in one go and tells the server that the data is finished
+    }
+    else if(req.url==='/about' && req.method==='GET'){
+        res.end(aboutPage)
+    }
+    else if(req.url==='/api' && req.method==='GET'){
+        
+        res.end(JSON.stringify(FakeData))
+    }
+    else if(req.url==='/adduser' && req.method==='POST'){
+        req.on('data',(chunk)=>{
+            console.log(JSON.parse(chunk))
+        })
+        res.end('User Added')
+    }
+    else{
+        res.end('404 Page')
+    }
+    console.log(req)
+});
+Server.listen(3000,'192.168.40.118',()=>{
+    console.log('Server is Running')
+})
