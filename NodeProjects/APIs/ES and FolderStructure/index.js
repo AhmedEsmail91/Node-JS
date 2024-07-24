@@ -13,94 +13,25 @@ app.use(cors());
 
 app.get('/', (req, res) => res.send('Hello World!'));
 //All Veiws
-/*
+
 //----------------------------------------DB----------------------------------------
-const sql=require('mysql2')
-const Query=sql.createConnection({
-    host:"localhost",
-    database:"session6_node",
-    password:"",
-    user:"root"
-});
-
+import {Query} from './databases/dbConnection.js';
+import * as Products from './src/modules/products/products.route.js';
 //----------------------------------------All Products Route----------------------------------------
-const allProducts=(req,res,next)=>{
-    var result=Query.execute('select * from products',(err,rows,filed)=>{
-        if(err){
-            res.json({"message":err.sqlMessage})
-        }
-        else{
-            res.json({message:"success",data:rows});
-        }
-    });
-}zxasasd
 //allProducts View EndPoint
-app.get('/products',allProducts)
 
+Products.allProducts(app);
 //----------------------------------------Show Product Route----------------------------------------
-const showProduct=(req,res,next)=>{
-    const {id}=req.params;
-    const result=Query.execute('select * from products where id=?',[id],(err,rows,filed)=>{
-        if(err){
-            res.json({"message":err.sqlMessage})
-        }
-        else{
-            res.json(rows)
-        }
-    });
-}
-// Calling showProduct View EndPoint
-app.get('/products/:id',showProduct)
+Products.showProduct(app);
 //----------------------------------------Add Product Route----------------------------------------
-const addProduct=(req,res,next)=>{
-    const {name,desc,price}=req.body;
-    // any callback functions has error as first parameter 
-    const result=Query.execute('insert into products (name,description,price) value(?,?,?)',[name,desc,price],(err,rows,filed)=>{
-        if(err){
-            res.json({"message":err.sqlMessage})
-        }
-        else{
-            res.json({"message":"Product Added"})
-        }
-    });
-}
 //addProduct EndPoint
-app.post('/products',addProduct)
+Products.addProduct(app);
 
 //----------------------------------------Delete Product Route----------------------------------------
-const deleteProduct=(req,res,next)=>{
-    const {id}=req.params;
-    const result=Query.execute('delete from products where id=?',[id],(err,rows,filed)=>{
-        if(err){
-            res.json({"message":err.sqlMessage})
-        }
-        else{
-            if(rows.affectedRows==0) res.json({"message":"Product Not Found"});
-
-            else res.json({"message":"Product Deleted"});
-            
-        }
-    });
-}
-app.delete('/products/:id',deleteProduct)
+Products.deleteProduct(app);
 //----------------------------------------Update Product Route----------------------------------------
-updateProduct=(req,res,next)=>{
-    const id =req.params.id;
-    const {name,desc,price}=req.body;
-    const result=Query.execute('update products set name=?,description=?,price=? where id=?',[name,desc,price,id],(err,rows,filed)=>{
-        if(err){
-            res.json({"message":err.sqlMessage})
-        }
-        else{
-            if(rows.affectedRows==0) res.json({"message":"Product Not Found"});
-
-            else res.json({"message":"Product Updated"});
-            
-        }
-    });
-}
-app.put('/products/:id',updateProduct)
-*/
+Products.updateProduct(app);
+// */
 
 //----------------------------------------Try Require for ES5----------------------------------------
 /* 
@@ -118,10 +49,10 @@ console.log(main().ROUTER());
 console.log(x);
 console.log(y);
 */
-app.listen(port, () => console.log(`App listening on port ${port}!`))
+app.listen(port,() => console.log(`App listening on port ${port}!`))
 
 //----------------------------------------Try Import for ES6----------------------------------------
-
+/*
 // import {x,demo} from './demo.mjs'; // importing the variables and the functions which are exported in the module.
 // import alias_name from './demo.mjs'; // this is the alias name just carries the defualt function to get the defualt and the other functions:
 import alias_name,{x,y,demo} from './demo.js';
@@ -129,3 +60,5 @@ console.log(x,y);
 demo();
 // import {mainDemo} from './demo.mjs';
 console.log(alias_name().demo());
+*/
+
