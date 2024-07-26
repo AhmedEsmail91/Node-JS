@@ -12,7 +12,7 @@ app.use(express.json());
 //Cross-Origin Resource Sharing (CORS) is a security feature that restricts cross-origin HTTP requests that are initiated from scripts running in the browser.
 app.use(cors());
 import router from './src/modules/products/products.route.js';
-app.use(router);
+app.use(router); // to use the routes for the products
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
