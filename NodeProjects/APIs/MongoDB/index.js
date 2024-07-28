@@ -5,6 +5,7 @@ const app = express()
 const port = 3000
 
 mongoose.set('strictQuery', true);
+
 mongoose.connect('mongodb://localhost:27017/node_mongodb').then(()=>{
     console.log("Connected to MongoDB");
 }).catch((err)=>{
