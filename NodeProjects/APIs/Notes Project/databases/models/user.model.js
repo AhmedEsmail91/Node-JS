@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 const UserSchema=new mongoose.Schema({
     name: String,
     email: String,
@@ -9,4 +9,9 @@ const UserSchema=new mongoose.Schema({
         default:'user'
     }
 },{timestamps:true});
+//mongooose middleware.
+// UserSchema.pre("save",async function(next){
+//     this.password=await bcrypt.hash(this.password,10);
+//     next();
+// });
 export const userModel=mongoose.model("user",UserSchema);

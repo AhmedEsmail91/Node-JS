@@ -2,9 +2,15 @@ import { userModel } from "../../../databases/models/user.model.js"
 import bcrypt from "bcrypt";
 
 const signup=async (req,res,next)=>{
-    req.body.password=await bcrypt.hash(req.body.password,10);
     await userModel.insertMany(req.body);
     res.send({message:"success"});
 }
 
-export default {signup};
+const signin=async (req,res,next)=>{
+    
+    let user=await userModel.findOne({email:req.body.email});
+    
+    if(user && bcrypt.compareSync(req.body.password,user.password)) res.send({message:"login --- token","user_id":user._id});
+    else res.send({message:"email is incorrect"});
+}
+export default {signup,signin};
