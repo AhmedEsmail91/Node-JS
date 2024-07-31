@@ -5,6 +5,6 @@ const app = express()
 const port = 3000
 express.urlencoded({ extended: true });
 app.use(express.json());
-app.use(userRouter);
+app.use('/User/',userRouter);
 dbConnection();
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
