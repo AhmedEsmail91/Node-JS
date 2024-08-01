@@ -3,6 +3,7 @@ import { noteModel } from "../../../databases/models/note.model.js";
 const allNotes=async (req,res,next)=>{
     // populate method is used to get the data of the referenced document(s) instead of just the id(s) of the referenced document(s).
     // .populate(ref. col., cols. from another table)
+    // we must add the referenced column in the schema of the document that we want to populate.
     let notes=await noteModel.find({createdBy:req.params.id}).populate("createdBy","name email -_id"); // find with no condition means get all the documents after joining the referenced document(s).
     res.send({message:"success",notes});
 }
