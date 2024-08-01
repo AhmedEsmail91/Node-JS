@@ -14,7 +14,7 @@ const signin=async (req,res,next)=>{
     if(user && bcrypt.compareSync(req.body.password,user.password)){
         //generate token
         let SECRET_KEY="secret";
-        let token=jwt.sign({userID:user._id},SECRET_KEY);//jwt.sign(payload->{userId:user._id},SECRET_KEY,{expiresIn:time});
+        let token=jwt.sign({userID:user._id},SECRET_KEY);
         res.send({message:"login --- token","user_Token":token,"user_id":user._id});
     }
     else res.send({message:"email is incorrect"});
