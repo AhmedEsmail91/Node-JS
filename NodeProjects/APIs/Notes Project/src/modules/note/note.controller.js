@@ -1,11 +1,22 @@
 import { noteModel } from "../../../databases/models/note.model.js";
-
+import jwt from "jsonwebtoken";
 const allNotes=async (req,res,next)=>{
-    // populate method is used to get the data of the referenced document(s) instead of just the id(s) of the referenced document(s).
-    // .populate(ref. col., cols. from another table)
-    // we must add the referenced column in the schema of the document that we want to populate.
-    let notes=await noteModel.find({createdBy:req.params.id}).populate("createdBy","name email -_id"); // find with no condition means get all the documents after joining the referenced document(s).
-    res.send({message:"success",notes});
+    // we gonna verify the user by the token and get the id of the user from the token and then get all the notes that are created by this user.
+    // jwt.verify(Token,SECRET_KEY);
+    // we get the token from the header of the request.
+    let headers=req.headers;
+    // let token=req.headers.token; 
+    //*OR*
+    // let token=req.header(token);
+    
+    // console.log(headers);
+    jwt.verify(headers.token,"secret", async(err,decoded)=>{
+        if(err) return res.send({message:"token is invalid"});
+        let notes=await noteModel.find({createdBy:decoded.userID},{_id:0}).populate("createdBy",'email -_id name'); // find with no condition means get all the documents after joining the referenced document(s).
+        res.send({message:"success",notes});
+    });
+
+    
 }
 
 const addNote=async (req,res,next)=>{
