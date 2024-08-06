@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
-export const sendEmail =async()=>{
+import { emailTemplete } from "./emailTemplete.js";
+export const sendEmail =async(token,sendtoEmail)=>{
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -7,12 +8,13 @@ export const sendEmail =async()=>{
             pass: 'orpebxjlmuionmhy'
         }
     });
+    const url=`http://localhost:3000/api/verifyEmail/${token}`;
     const info=await transporter.sendMail({
         from: '"Node JS Sara7a App"<eng.ahmed.esmail.19@gmail.com>',
-        to: "ahmed.esmail.9102@gmail.com",
+        to: sendtoEmail,
         subject: "Hello",
         // text: "Hello world?",
-        html: "<a href='http://localhost:3000/'>VerifyEmail</a>"
+        html: emailTemplete(url)
     });
     console.log("Message sent: %s", info.messageId);
 };
