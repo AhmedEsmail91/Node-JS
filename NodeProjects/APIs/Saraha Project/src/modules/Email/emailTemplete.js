@@ -1,4 +1,4 @@
-export function emailTemplete(url){
+export function emailTemplete(url,name){
     return `<!-- © 2018 Shift Technologies. All rights reserved. -->
 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout:fixed;background-color:#f9f9f9" id="bodyTable">
 	<tbody>
@@ -45,7 +45,7 @@ export function emailTemplete(url){
 										</tr>
 										<tr>
 											<td style="padding-bottom: 5px; padding-left: 20px; padding-right: 20px;" align="center" valign="top" class="mainTitle">
-												<h2 class="text" style="color:#000;font-family:Poppins,Helvetica,Arial,sans-serif;font-size:28px;font-weight:500;font-style:normal;letter-spacing:normal;line-height:36px;text-transform:none;text-align:center;padding:0;margin:0">Hi "John Doe"</h2>
+												<h2 class="text" style="color:#000;font-family:Poppins,Helvetica,Arial,sans-serif;font-size:28px;font-weight:500;font-style:normal;letter-spacing:normal;line-height:36px;text-transform:none;text-align:center;padding:0;margin:0">Hi "${name}"</h2>
 											</td>
 										</tr>
 										<tr>

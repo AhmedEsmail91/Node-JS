@@ -1,9 +1,8 @@
 import userModel from './../../../databases/models/user.model.js';
 import {sendEmail} from './../../modules/Email/sendEmail.js';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 const signup = async (req, res) => {
-    jwt.sign({ email: req.body.email }, process.env.JWT_SECRET, { expiresIn: '1d' }, async (err, token) => {
+    jwt.sign({ email: req.body.email,name:req.body.name}, process.env.JWT_SECRET, { expiresIn: '10m' }, async (err, token) => {
         if (err) {
             res.status(500).json({ message: err.message });
         }
