@@ -13,5 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 import userRoutes from './src/modules/user/user.routes.js';
 app.use('/api', userRoutes);
-
+app.get('/', (req, res) => {
+  res.send('Email Verification App')
+})
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
