@@ -12,7 +12,9 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 import userRoutes from './src/modules/user/user.routes.js';
+import messageRoutes from './src/modules/messages/message.routes.js';
 app.use('/api', userRoutes);
+app.use('/api', messageRoutes);
 app.get('/', (req, res) => {
   res.send('Email Verification App')
 })
