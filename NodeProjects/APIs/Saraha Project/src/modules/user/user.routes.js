@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.post('/signup', checkEmailExist, hashPassword, userController.signup);
 router.get('/verifyEmail/:token', userController.verifyEmail);
-router.get('/allUsers', userController.allUsers);
-router.post('/signin', userController.signin);
-router.post('/signin', userController.signin);
+router.get('/allUsers', userController.allUsers); 
+router.post('/signin', userController.signin); // Provide a Token
 export default router;

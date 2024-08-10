@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+//Verify the token.
 const auth=async(req,res,next)=>{
     try{
         const token=req.headers.auth;

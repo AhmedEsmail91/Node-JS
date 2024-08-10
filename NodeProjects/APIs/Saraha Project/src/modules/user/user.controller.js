@@ -10,7 +10,7 @@ const allUsers=async(req,res)=>{
         res.status(500).json({message:err.message});
     });
 }
-
+// Signup controller
 const signup = async (req, res) => {
     userModel.insertMany(req.body).then((data) => {
         jwt.sign({ email: req.body.email,name:req.body.name}, process.env.JWT_SECRET, { expiresIn: '10m' }, async (err, token) => {
@@ -19,14 +19,10 @@ const signup = async (req, res) => {
             }
             await sendEmail(token, req.body.email);
         });
-        res.status(201).json({ message: "User created successfully" });
+        res.status(201).json({ message: "Check Your Inbox & Verify your account" });
     }).catch((err) => {
         res.status(500).json({ message: err.message });
     });
-
-    
-    
-    
 };
 const verifyEmail = async (req, res) => {
     const token = req.params.token;
@@ -39,6 +35,7 @@ const verifyEmail = async (req, res) => {
         res.status(500).json({ message: err.message });
     });
 }
+// Signin controller
 const signin=async(req,res)=>{
     const user=await userModel.findOne({email:req.body.email});
     if(user){
@@ -49,7 +46,7 @@ const signin=async(req,res)=>{
                     userId:user._id,
                     username:user.name,
                     email:user.email
-                },process.env.JWT_SECRET,{expiresIn:'10m'});
+                },process.env.JWT_SECRET,{expiresIn:'10m'}); //Token expires in 10 minutes
                 req.headers.auth=token;
                 res.status(200).json({message:"Login Successfull",token:token});
             }
@@ -62,4 +59,27 @@ const signin=async(req,res)=>{
         res.status(400).json({message:"Invalid Email"});
     }
 }
-export default {signin,signup, verifyEmail, allUsers};
+
+// catch error (express-async-handler) [making it from scratch]
+// -With this way we generalize the error handling instead of writing (try||then) & catch block in every controller.
+function catchError(fn){
+    return (req,res,next)=>{
+        fn(req,res,next).catch(
+            (err)=>{res.status(500).json({message:err.message})}
+        );
+    }
+}
+const new_signup= catchError(async (req,res,next)=>{
+    userModel.insertMany(req.body).then((data) => {
+        jwt.sign({ email: req.body.email,name:req.body.name}, process.env.JWT_SECRET, { expiresIn: '10m' }, async (err, token) => {
+            if (err) {
+                res.status(500).json({ message: err.message });
+            }
+            await sendEmail(token, req.body.email);
+        });
+        res.status(201).json({ message: "Check Your Inbox & Verify your account" });
+    }).catch((err) => {
+        res.status(500).json({ message: err.message });
+    });
+});
+export default {signin,signup, verifyEmail, allUsers,new_signup};

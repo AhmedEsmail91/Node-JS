@@ -11,12 +11,16 @@ const sendMessage = async (req, res) => {
 }
 const userMessages = async (req, res) => {
     // get the user id from the token from the previous middleware which is auth
-    const messsages =await messageModel.find({receivedId:req.userData.userId}).populate("receivedId","name email -_id");
-    if(messsages){
-        res.status(200).json({message:"All Messages",data:messsages});
+    try {
+        const messages = await messageModel.find({ receivedId: req.userData.userId }).populate("receivedId", "name email -_id");
+        if (messages.length > 0) {
+            res.status(200).json({ message: "All Messages", data: messages });
+        } else {
+            res.status(400).json({ message: "No messages found" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-    else{
-        res.status(400).json({message:"No messages found"});
-    }
+    
 }
 export default { sendMessage ,userMessages };
