@@ -23,4 +23,9 @@ app.get('/', (req, res) => {
 app.get('/all-end-points', (req, res) => {
   res.send({endpoits:expresslistendpoints(app)});
 })
+
+app.use((err,req, res,next) => {
+  res.status(500).json({ error: err });
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
