@@ -15,8 +15,9 @@ const allUsers=catchError(async(req,res)=>{
 // Signup controller
 const signup = catchError(
     async (req, res,next) => {
-    await userModel.insertMany(req.body);
-    const token = jwt.sign({ email: req.body.email,name:req.body.name}, process.env.JWT_SECRET, { expiresIn: '10m' });
+    const {name,email,password}=req.body;
+    await userModel.insertMany({name,email,password});
+    const token = jwt.sign({ email:email,name:name}, process.env.JWT_SECRET, { expiresIn: '10m' });
     await sendEmail(token, req.body.email);
     res.json({ message: "Check Your Inbox & Verify your account" });
 });
@@ -41,13 +42,13 @@ const signin = catchError(
                     req.headers.auth = token;
                     res.status(200).json({ message: "Login Successful", token: token });
                 }else {
-                    next(AppError("Email not verified", 400));
+                    next(new AppError("Email not verified", 400));
                 }
             } else {
-                next(AppError("Invalid Password", 400)); 
+                next(new AppError("Invalid Password", 400)); 
             }
         } else {
-            next(AppError("User not found", 404));
+            next(new AppError("User not found", 404));
         }
     }
 );
