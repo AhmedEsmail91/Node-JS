@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 import userRoutes from './src/modules/user/user.routes.js';
 import messageRoutes from './src/modules/messages/message.routes.js';
+import { globalError } from './src/middlewares/globalErrorMiddleware.js';
 app.use('/api', userRoutes);
 app.use('/api', messageRoutes);
 
@@ -33,11 +34,7 @@ app.use("*",(req,res,next)=>{
   next(new AppError(`Not Found endPoint ${req.originalUrl}`,404));
 });
 
-// for handling errors
-app.use((err,req, res,next) => {
-  err.statusCode = err.statusCode || 500;
-  res.status(err.statusCode).json({ error: err.message });
-}); 
+app.use(globalError);
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
