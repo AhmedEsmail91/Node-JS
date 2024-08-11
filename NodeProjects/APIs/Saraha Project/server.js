@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import dbConnect from "./databases/dbConnection.js";
 import expresslistendpoints from 'express-list-endpoints';
+import AppError from './src/utils/AppError.js';
 dbConnect();
 dotenv.config();
 const app = express()
@@ -20,12 +21,30 @@ app.use('/api', messageRoutes);
 app.get('/', (req, res) => {
   res.send('Verfied Done');
 })
+// display all end points.
 app.get('/all-end-points', (req, res) => {
   res.send({endpoits:expresslistendpoints(app)});
 })
 
-app.use((err,req, res,next) => {
-  res.status(500).json({ error: err });
+// for handling 404 routes [must be in the end of the file cause js compile it line by line] to handle all routes that not exist.
+app.use("*",(req,res,next)=>{
+  // res.status(404).json({error:`Not Found endPoint ${req.originalUrl}`}); // this is a response not error to pass it to the Global error handling middleware
+  // so we need to make it as an Error not a response.
+  next(new AppError(`Not Found endPoint ${req.originalUrl}`,404));
 });
 
+// for handling errors
+app.use((err,req, res,next) => {
+  err.statusCode = err.statusCode || 500;
+  res.status(err.statusCode).json({ error: err.message });
+}); 
+
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+/**Status Codes
+ * 100-199: Informational
+ * 200-299: Success
+ * 300-399: Redirection
+ * 400-499: Client Error (the client made an error)
+ * 500-599: Server Error (the server made an error)
+ */

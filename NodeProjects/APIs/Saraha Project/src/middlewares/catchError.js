@@ -4,8 +4,7 @@ export function catchError(fn) {
         fn(req, res, next).catch(
             (err) => { 
                 // next() عصفوره
-                next(err); // this will pass the error to the last middleware العمده الاخيره
-                
+                next(err); // this will pass the error to the last middleware العمده الاخيره   
             }
         );
     }
