@@ -8,4 +8,5 @@ import auth from './../../middlewares/auth.js';
 router.post('/sendMessage/', messageController.sendMessage);
 // the middleware (auth) will check if the token is valid or not.
 router.get('/userMessages', auth,messageController.userMessages);
+router.get('/shareProfile', messageController.shareProfile);
 export default router;

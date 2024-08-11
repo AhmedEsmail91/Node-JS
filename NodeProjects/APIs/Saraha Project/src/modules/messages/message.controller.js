@@ -21,5 +21,15 @@ const userMessages =catchError( async (req, res,next) => {
         next(new AppError("No Messages", 404));
     }
 });
+import Qrcode from 'qrcode';
 
-export default { sendMessage ,userMessages };
+const shareProfile=catchError(async(req,res)=>{
+    Qrcode.toDataURL("http://localhost:3000/messages",(err,qr)=>{
+        if (err) {
+            next(new AppError(err.message, 400));
+        }
+        // else res.status(200).json({message:"QR code generated",codeData:qr});
+        else res.send(`<img src=${qr} alt="QR Code">`); //or simply send the image to the client directly.
+    });
+});
+export default { sendMessage ,userMessages ,shareProfile};

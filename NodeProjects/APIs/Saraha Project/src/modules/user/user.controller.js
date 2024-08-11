@@ -61,4 +61,5 @@ function readToken(req,res,next){
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     res.status(200).json(req.user);
 }
+
 export default {signin,signup, verifyEmail, allUsers,readToken};
