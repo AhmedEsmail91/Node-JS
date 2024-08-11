@@ -5,5 +5,6 @@ export const globalError=(err,req, res,next) => {
     if (mode==="prod") {
         res.status(err.statusCode).json({ error: err.message});
     }
+    // descripe the error in details just for development not for production.
     else res.status(err.statusCode).json({ error: err.message,stack:err.stack });
   }; 

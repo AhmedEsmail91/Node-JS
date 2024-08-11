@@ -1,3 +1,8 @@
+process.on('uncaughtException',err=>{ 
+  console.log('Uncaught Exception',err.name,err.message);
+  console.log('Shutting down the server due to Uncaught Exception');
+  process.exit(1);
+})
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -35,13 +40,19 @@ app.use("*",(req,res,next)=>{
 });
 
 app.use(globalError);
+/**Process
+ * process is a global object representing the node.js process. like window in the browser.
+ * process.on() is used to register the handler for the given event.
+ * process.on('unhandledRejection',); is used to handle the unhandled promise rejections.
+ * process.on('uncoughtException',); is used to handle the unhandled exceptions.(write on top of the file)
+ * in fires when you have a promise that is rejected but there is no .catch() handler to deal with the rejection.
+ * like the database connection in the dbConnection.js file, if the connection failed the error will be unhandled.
+ */
 
+process.on('unhandledRejection',(err)=>{
+  console.log('Unhandled Rejection',err.name,err.message);
+  console.log('Shutting down the server due to Unhandled Promise Rejection');
+  process.exit(1);
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-/**Status Codes
- * 100-199: Informational
- * 200-299: Success
- * 300-399: Redirection
- * 400-499: Client Error (the client made an error)
- * 500-599: Server Error (the server made an error)
- */
