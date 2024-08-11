@@ -31,25 +31,33 @@ const verifyEmail = catchError(
 // Signin controller
 const signin = catchError(
     async (req, res, next) => {
-    const user = await userModel.findOne({ email: req.body.email });
-    if (user) {
-        const validPassword = bcrypt.compareSync(req.body.password, user.password);
-        if (validPassword) {
-            if (user.verifyEmail) {
-                let token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '10m' }); // Token expires in 10 minutes
-                req.headers.auth = token;
-                res.status(200).json({ message: "Login Successful", token: token });
+        const { email, password } = req.body;
+        const user = await userModel.findOne({ email });
+        if (user) {
+            const validPassword = bcrypt.compareSync(password, user.password);
+            if (validPassword) {
+                if (user.verifyEmail) {
+                    let token = jwt.sign({userId:user.id,email:user.email,name:user.name}, process.env.JWT_SECRET, { expiresIn: '10m' }); // Token expires in 10 minutes
+                    req.headers.auth = token;
+                    res.status(200).json({ message: "Login Successful", token: token });
+                }else {
+                    next(AppError("Email not verified", 400));
+                }
             } else {
-                next(AppError("Email not verified", 400));
+                next(AppError("Invalid Password", 400)); 
             }
         } else {
-            next(AppError("Invalid Password", 400)); 
+            next(AppError("User not found", 404));
         }
-    } else {
-        next(AppError("User not found", 404));
     }
-});
+);
 
 // catch error (express-async-handler) [making it from scratch]
 // -With this way we generalize the error handling instead of writing (try||then) & catch block in every controller.
-export default {signin,signup, verifyEmail, allUsers};
+function readToken(req,res,next){
+    const token = req.headers.auth;
+    if (!token) next(new AppError("Token not found", 401));
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json(req.user);
+}
+export default {signin,signup, verifyEmail, allUsers,readToken};

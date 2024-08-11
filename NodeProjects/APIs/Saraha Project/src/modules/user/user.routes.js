@@ -8,4 +8,5 @@ router.post('/signup', checkEmailExist, hashPassword, userController.signup);
 router.get('/verifyEmail/:token', userController.verifyEmail);
 router.get('/allUsers', userController.allUsers); 
 router.post('/signin', userController.signin); // Provide a Token
+router.get('/tokens', userController.readToken);
 export default router;
