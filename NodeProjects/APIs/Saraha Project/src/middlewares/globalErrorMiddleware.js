@@ -1,4 +1,4 @@
-let mode="dev"
+let mode=process.env.MODE
 export const globalError=(err,req, res,next) => {
     err.statusCode = err.statusCode || 500;
     // err.stack: show the error in details just for development not for production.

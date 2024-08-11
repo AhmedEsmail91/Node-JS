@@ -5,6 +5,8 @@ process.on('uncaughtException',err=>{
 })
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+// .config() method is used to load the environment variables from the .env file into the process.env object, can take: {path: './path/to/.env'}.
 import cors from 'cors';
 import dbConnect from "./databases/dbConnection.js";
 import expresslistendpoints from 'express-list-endpoints';
