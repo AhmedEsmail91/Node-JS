@@ -9,15 +9,15 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "User",
         required: true
-    },
-    seenTime:{
-        type: Date,
-        default: null
-    },
-    softDelete:{
-        type: Boolean,
-        default: false
     }
+    // seenTime:{
+    //     type: Date,
+    //     default: null
+    // },
+    // softDelete:{
+    //     type: Boolean,
+    //     default: false
+    // }
 },{timestamps:true});
 
 const Message = mongoose.model("Message", messageSchema);

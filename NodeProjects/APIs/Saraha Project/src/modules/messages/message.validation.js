@@ -4,4 +4,7 @@ const addMessageSchema = Joi.object({
     // receivedId: Joi.string().regex('^[0-9a-fA-F]+$').required() // or simply:
     receivedId: Joi.string().hex().length(24).required()
 });
-export default { addMessageSchema };
+const paramsVal=Joi.object({
+    id: Joi.string().hex().length(24).required()
+});
+export default { addMessageSchema ,paramsVal};

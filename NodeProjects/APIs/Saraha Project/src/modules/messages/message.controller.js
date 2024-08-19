@@ -13,8 +13,8 @@ const sendMessage = async (req, res) => {
 }
 const userMessages =catchError( async (req, res,next) => {
     // get the user id from the token from the previous middleware which is auth
-    const userId=jwt.verify(req.headers.auth,process.env.JWT_SECRET).userId;
-    const messages = await messageModel.find({ receivedId: userId }).populate("receivedId", "name email -_id");
+    // const userId=jwt.verify(req.headers.auth,process.env.JWT_SECRET).userId;
+    const messages = await messageModel.find({ receivedId: req.params.id }).populate("receivedId", "name email -_id");
     if (messages.length > 0) {
         res.status(200).json({ message: "All Messages", data: messages });
     } else {

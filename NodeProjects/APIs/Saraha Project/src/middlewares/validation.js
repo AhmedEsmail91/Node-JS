@@ -3,14 +3,19 @@ import { catchError } from './catchError.js';
 // Signup validation function
 const validation=(schema)=>{
     return async (req, res, next)=>{
-    // abortEarly:false will return all errors not just the first one, Note: it returns first error by default
-    const { error } = schema.validate(req.body, { abortEarly: false });
+    //generalize the input of the validation function to be the request body or the request params.
+    const { error } = schema.validate({...req.params,...req.body,...req.query}, { abortEarly: false });
     if (error) {
         console.log(error.details);
-        next(new AppError(error.details, 400));
+        let errMsg=[];
+        error.details.forEach(element => {
+            errMsg.push(element.message);
+        });
+        console.log(errMsg.length)
+        next(new AppError(errMsg, 400));
     } else {
         next();
     }
 }  
 };
-export {validation};
+export {validation}; 
