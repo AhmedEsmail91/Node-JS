@@ -10,6 +10,14 @@ const messageSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    seenTime:{
+        type: Date,
+        default: null
+    },
+    softDelete:{
+        type: Boolean,
+        default: false
+    }
 },{timestamps:true});
 
 const Message = mongoose.model("Message", messageSchema);
