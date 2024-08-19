@@ -12,4 +12,6 @@ const signinSchemaValidation=Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().pattern(new RegExp(pattern)).required(),
 });
+// Egypt Phone Pattern Regex:
+// let EgyPhone_pattern="^[(002)(\+20)]*01[0125]\d{8}$";
 export default {signupSchemaValidation,signinSchemaValidation};

@@ -22,6 +22,7 @@ const userMessages =catchError( async (req, res,next) => {
     }
 });
 
+//-----------------------------QR code generation--------------------------------
 import Qrcode from 'qrcode';
 
 const shareProfile=catchError(async(req,res)=>{
