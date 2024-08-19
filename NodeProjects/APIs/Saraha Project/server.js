@@ -33,6 +33,41 @@ app.get('/', (req, res) => {
 app.get('/all-end-points', (req, res) => {
   res.send({endpoits:expresslistendpoints(app)});
 })
+// -----------------File Upload-----------------
+import multer from 'multer';
+import {v4 as uuidv4} from 'uuid'; // making Universal Unique Id.
+// multer.diskStorage() is used to configure the disk storage engine.
+const storage=multer.diskStorage({
+  destination:(req,file,cb)=>{
+    // cb callback function to tell multer where to store the file takes 2 arguments (error,destination);
+    cb(null,'uploads/');
+  },
+  filename:(req,file,cb)=>{
+    // cb here takes 2 arguments (error,filename);
+    // naming the file randomly:
+    // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    // cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
+
+    // Rational naming:
+    // file.originalname ==> the original name of the file with its extension.
+    // const ext=file.originalname.split('.').pop(); // getting the extension.
+    // cb(null,file.originalname); // naming the file with its original name and extension.
+    cb(null,uuidv4()+'-'+file.originalname); // naming the file with a random name and its original extension.
+  }
+})
+const upload = multer({ dest: 'uploads/',storage:storage }) // this creates a folder named uploads in the root of the project.
+// upload.single() // this uploads from single file from an input
+// upload.array() // this uploads from multiple file from an input
+// upload.fields() // this uploads from multiple file from multiple inputs
+// upload.none() // this uploads from no file from an input Only text data
+// upload.any() // this uploads from any file from any input
+import photoModel from './databases/models/photo.model.js';
+
+app.post('/upload', upload.single('img'),(req, res) => {
+
+  res.json({message:"success",fileName:req.file.originalname,destination:req.file.destination+req.file.filename});
+});
+//-----------------/End File Upload-----------------
 
 // for handling 404 routes [must be in the end of the file cause js compile it line by line] to handle all routes that not exist.
 app.use("*",(req,res,next)=>{
