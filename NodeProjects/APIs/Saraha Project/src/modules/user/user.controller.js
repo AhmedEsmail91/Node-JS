@@ -52,8 +52,7 @@ const signin = catchError(
     }
 );
 
-// catch error (express-async-handler) [making it from scratch]
-// -With this way we generalize the error handling instead of writing (try||then) & catch block in every controller.
+
 function readToken(req,res,next){
     const token = req.headers.auth;
     if (!token) next(new AppError("Token not found", 401));
