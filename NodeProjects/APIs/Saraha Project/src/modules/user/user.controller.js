@@ -38,8 +38,11 @@ const signin = catchError(
             if (validPassword) {
                 if (user.verifyEmail) {
                     let token = jwt.sign({userId:user.id,email:user.email,name:user.name}, process.env.JWT_SECRET, { expiresIn: '10m' }); // Token expires in 10 minutes
-                    req.headers.auth = token;
-                    res.status(200).json({ message: "Login Successful", token: token });
+                    res
+                    .cookie("auth", token, {
+                    httpOnly: true,
+                    })
+                    .status(200).json({ message: "Login Successful", token: token });
                 }else {
                     next(new AppError("Email not verified", 400));
                 }

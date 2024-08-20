@@ -44,31 +44,65 @@ const storage=multer.diskStorage({
   },
   filename:(req,file,cb)=>{
     // cb here takes 2 arguments (error,filename);
-    // naming the file randomly:
-    // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    // cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
-
-    // Rational naming:
-    // file.originalname ==> the original name of the file with its extension.
-    // const ext=file.originalname.split('.').pop(); // getting the extension.
-    // cb(null,file.originalname); // naming the file with its original name and extension.
     cb(null,uuidv4()+'-'+file.originalname); // naming the file with a random name and its original extension.
   }
 })
-const upload = multer({ dest: 'uploads/',storage:storage }) // this creates a folder named uploads in the root of the project.
-// upload.single() // this uploads from single file from an input
-// upload.array() // this uploads from multiple file from an input
-// upload.fields() // this uploads from multiple file from multiple inputs
-// upload.none() // this uploads from no file from an input Only text data
-// upload.any() // this uploads from any file from any input
+
+//-------------------File Filter-----------------
+// Filter the file type.
+function fileFilter(req,file,cb){
+  /** File Object Structure
+   * "fieldname"
+    "originalname"
+    "encoding"
+    "mimetype"
+    "destination"
+    "filename"
+    "path"
+    "size"
+   */
+  if(file.fieldname==='img'){
+    if(file.mimetype.startsWith("image")){
+      cb(null,true); // accept the file pass it to the storage.
+    }else{
+      cb(new AppError('File Type Not Supported',400),false);// refuse the file pass it to the storage and through an AppError(message,statusCode).
+    }
+  }
+  if(file.fieldname==="name"){
+    
+  }
+}
+//-------------------/End File Filter-----------------
+// Apply the multer middleware configuration
+const upload = multer({ dest: 'uploads/',storage:storage ,fileFilter:fileFilter});
+
 import photoModel from './databases/models/photo.model.js';
-
-app.post('/upload', upload.single('img'),(req, res) => {
-
-  res.json({message:"success",fileName:req.file.originalname,destination:req.file.destination+req.file.filename});
+/**Saving the File in the Database
+ *For the DB add the 
+ */
+// endpoint to upload a file.
+app.post('/upload', upload.single('img'),async(req, res) => {
+  // req.file --> single file
+  // req.files --> multiple files
+  req.body.img=req.file.filename;
+  await photoModel.insertMany(req.body);
+  const data={}
+  const {title,img}=req.body;
+  data.title=title
+  data.img=img
+  res.json({message:"success",fileData:data});
 });
 //-----------------/End File Upload-----------------
+//-----------------Get AllPhotos-----------------
+app.use("/upload",express.static('uploads'));// access use (localhost:3000/upload/fileName) to get the file.
 
+app.get('/all-photos',async(req,res)=>{
+  const photos=await photoModel.find();
+  photos.map(photo=>photo.img=`http://localhost:${process.env.PORT}/${photo.img}`);
+  res.json(photos);
+});
+
+//-----------------/End Get AllPhotos-----------------
 // for handling 404 routes [must be in the end of the file cause js compile it line by line] to handle all routes that not exist.
 app.use("*",(req,res,next)=>{
   // res.status(404).json({error:`Not Found endPoint ${req.originalUrl}`}); // this is a response not error to pass it to the Global error handling middleware
