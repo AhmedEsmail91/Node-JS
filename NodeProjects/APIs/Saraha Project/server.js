@@ -51,16 +51,17 @@ const storage=multer.diskStorage({
 //-------------------File Filter-----------------
 // Filter the file type.
 function fileFilter(req,file,cb){
-  /** File Object Structure
-   * "fieldname"
-    "originalname"
-    "encoding"
-    "mimetype"
-    "destination"
-    "filename"
-    "path"
-    "size"
-   */
+   /*
+   * //-----------File Object Structure-----------
+   * {"fieldname"
+   * "originalname"
+   * "encoding"
+   * "mimetype"
+   * "destination"
+   * "filename"
+   * "path"
+   * "size"}
+   * */
   if(file.fieldname==='img'){
     if(file.mimetype.startsWith("image")){
       cb(null,true); // accept the file pass it to the storage.
@@ -73,17 +74,14 @@ function fileFilter(req,file,cb){
   }
 }
 //-------------------/End File Filter-----------------
-// Apply the multer middleware configuration
+// Assign the multer middleware configuration to the upload variable.
+import photoModel from './databases/models/photo.model.js';
+
 const upload = multer({ dest: 'uploads/',storage:storage ,fileFilter:fileFilter});
 
-import photoModel from './databases/models/photo.model.js';
-/**Saving the File in the Database
- *For the DB add the 
- */
+
 // endpoint to upload a file.
 app.post('/upload', upload.single('img'),async(req, res) => {
-  // req.file --> single file
-  // req.files --> multiple files
   req.body.img=req.file.filename;
   await photoModel.insertMany(req.body);
   res.json({message:"success",fileData:{...req.body.img,...req.body.title}});
@@ -92,10 +90,13 @@ app.post('/upload', upload.single('img'),async(req, res) => {
 //-----------------Get AllPhotos-----------------
 app.use("/uploads",express.static('uploads'));// access use (localhost:3000/upload/fileName) to get the file.
 
-app.get('/all-photos',async(req,res)=>{
-  const photos=await photoModel.find();
-  photos.map(photo=>photo.img=`http://localhost:${process.env.PORT}/uploads/${photo.img}`);
-  res.json(photos);
+app.get('/all-photos',async(req,res,next)=>{
+  photoModel.find().then((photos)=>{
+    photos.map(photo=>photo.img=`http://localhost:${process.env.PORT}/uploads/${photo.img}`);
+    res.json(photos);
+  }).catch((err)=>{
+    next(new AppError(err.message,400));
+  });
 });
 
 //-----------------/End Get AllPhotos-----------------
