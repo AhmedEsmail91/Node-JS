@@ -1,8 +1,14 @@
 import mongoose, { mongo } from "mongoose";
-const photo=new mongoose.Schema({
+const schema=new mongoose.Schema({
     title:String,
     img:String
 },{timestamps:true});
-const photoModel=mongoose.model("Photo",photo);
 
+// init for find 
+schema.post("init", (doc) => {
+    doc.img=`${process.env.HOST}:${process.env.PORT}/uploads/${doc.img}`;
+
+});
+
+const photoModel=mongoose.model("Photo",schema);
 export default photoModel;
