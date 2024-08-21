@@ -86,39 +86,25 @@ app.post('/upload', upload.single('img'),async(req, res) => {
   // req.files --> multiple files
   req.body.img=req.file.filename;
   await photoModel.insertMany(req.body);
-  const data={}
-  const {title,img}=req.body;
-  data.title=title
-  data.img=img
-  res.json({message:"success",fileData:data});
+  res.json({message:"success",fileData:{...req.body.img,...req.body.title}});
 });
 //-----------------/End File Upload-----------------
 //-----------------Get AllPhotos-----------------
-app.use("/upload",express.static('uploads'));// access use (localhost:3000/upload/fileName) to get the file.
+app.use("/uploads",express.static('uploads'));// access use (localhost:3000/upload/fileName) to get the file.
 
 app.get('/all-photos',async(req,res)=>{
   const photos=await photoModel.find();
-  photos.map(photo=>photo.img=`http://localhost:${process.env.PORT}/${photo.img}`);
+  photos.map(photo=>photo.img=`http://localhost:${process.env.PORT}/uploads/${photo.img}`);
   res.json(photos);
 });
 
 //-----------------/End Get AllPhotos-----------------
-// for handling 404 routes [must be in the end of the file cause js compile it line by line] to handle all routes that not exist.
+
 app.use("*",(req,res,next)=>{
-  // res.status(404).json({error:`Not Found endPoint ${req.originalUrl}`}); // this is a response not error to pass it to the Global error handling middleware
-  // so we need to make it as an Error not a response.
   next(new AppError(`Not Found endPoint ${req.originalUrl}`,404));
 });
 
 app.use(globalError);
-/**Process
- * process is a global object representing the node.js process. like window in the browser.
- * process.on() is used to register the handler for the given event.
- * process.on('unhandledRejection',); is used to handle the unhandled promise rejections.
- * process.on('uncoughtException',); is used to handle the unhandled exceptions.(write on top of the file)
- * in fires when you have a promise that is rejected but there is no .catch() handler to deal with the rejection.
- * like the database connection in the dbConnection.js file, if the connection failed the error will be unhandled.
- */
 
 process.on('unhandledRejection',(err)=>{
   console.log('Unhandled Rejection',err.name,err.message);
