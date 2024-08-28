@@ -1,14 +1,14 @@
+// Caught (uncaught exceptions)=>beginning of the Server.js, (unhandled rejections)=>end of the Server.js
 process.on('uncaughtException',err=>{ 
   console.log('Uncaught Exception',err.name,err.message);
   console.log('Shutting down the server due to Uncaught Exception');
   process.exit(1);
 })
-import express, { Router } from 'express';
+import express from 'express';
 import dotenv from 'dotenv';dotenv.config();
 import cors from 'cors';
 import dbConnect from "./databases/dbConnection.js";
-import expresslistendpoints from 'express-list-endpoints';
-import AppError from './src/utils/AppError.js';
+
 dbConnect();
 dotenv.config();
 const app = express()
@@ -31,7 +31,7 @@ app.use('/api', messageRoutes);
 app.use('/api', photoRoutes);
 
 
-
+import expresslistendpoints from 'express-list-endpoints';
 // display all end points.
 app.get('/all-end-points', (req, res) => {
   res.send({endpoits:expresslistendpoints(app)});
